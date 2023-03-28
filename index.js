@@ -36,7 +36,7 @@ async function autoScroll(page) {
 
 async function extractTextFromSelector(page, selector, timeout = 5000) {
   await page.waitForSelector(selector);
-  return await page.$eval(selector, el => el.textContent);
+  return await page.$eval(selector, (el) => el.textContent);
 }
 
 (async () => {
@@ -58,6 +58,7 @@ async function extractTextFromSelector(page, selector, timeout = 5000) {
   const config = {
     enoIndex: 2,
     enoLogin: { username: "user", password: "1234" },
+    catchAll: "@fiercloud.com",
   };
 
   const page = await browser.newPage();
@@ -140,19 +141,21 @@ async function extractTextFromSelector(page, selector, timeout = 5000) {
     const cardExpSelector =
       "#routerOutletContainer > app-detail-virtual-card > div.select-card-container > div > app-virtual-card > div > div.card-exp.card-data.ng-star-inserted";
 
-    const cardNumber = await extractTextFromSelector(enoFrame, cardNumberSelector);
+    const cardNumber = await extractTextFromSelector(
+      enoFrame,
+      cardNumberSelector
+    );
     const cardCvv = await extractTextFromSelector(enoFrame, cardCvvSelector);
     const cardExp = await extractTextFromSelector(enoFrame, cardExpSelector);
 
     console.log("Card Number: " + cardNumber);
     console.log("Card CVV: " + cardCvv);
     console.log("Card Exp: " + cardExp);
-
   } catch (err) {
     console.log(err);
   }
 
-  await page.close()
+  await page.close();
   await browser.close();
 
   const eatsBrowser = await puppeteer.launch({
@@ -163,11 +166,32 @@ async function extractTextFromSelector(page, selector, timeout = 5000) {
       "--no-sandbox",
       "--no-first-run",
       "--no-default-browser-check",
-      "--extensions-on-chrome-urls"
+      "--extensions-on-chrome-urls",
     ],
   });
   const eatsPage = await eatsBrowser.newPage();
   await eatsPage.goto("https://www.ubereats.com");
+  await eatsPage.goto("https://www.ubereats.com/login-redirect/");
+
+  const emailAddress = await eatsPage.waitForSelector(
+    "#PHONE_NUMBER_or_EMAIL_ADDRESS",
+    { timeout: 10000 }
+  );
+
+  await emailAddress.focus();
+
+  await eatsPage.keyboard.type(
+    "eats" + randomInt(100, 1000) + config.catchAll,
+    {
+      delay: getRandomInt(50, 100),
+    }
+  );
+
+  await eatsPage.click("#forward-button");
+
+  // Input email code from email via IMAP
+  // Input First & Last Name
+  // Continue prompts until account is created
 
   await eatsPage.waitForTimeout(2500000);
 })();
