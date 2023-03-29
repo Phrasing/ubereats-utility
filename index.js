@@ -13,6 +13,8 @@ const {
   getRandomInt,
 } = require("./puppeteer_utility.js");
 
+const textVerified = require("./textverified.js");
+
 function getEnoExtension() {
   return "C:\\Users\\Mark\\Documents\\4.1.3\\4.1.3";
 }
@@ -501,6 +503,7 @@ function createTemplateConfig(configPath) {
       emailAddress: "your_gmail_address@gmail.com",
       appPassword: "gmail_app_password",
     },
+    textVerifiedApiKey: "your_text_verified_api_key",
     catchAll: "@yourcatchall.com",
     uberFirstName: "John",
     billingZip: "eno_billing_zip",
@@ -519,6 +522,29 @@ function createTemplateConfig(configPath) {
     createTemplateConfig(configPath);
     return;
   }
+
+  const authToken = await textVerified.fetchTextVerifiedAuthToken(
+    config.textVerifiedApiKey
+  );
+
+  const uberVerificationId = await textVerified.getUberVerificationId(
+    authToken
+  );
+
+  const smsPayload = await textVerified.getUberVerificationPayload(
+    authToken,
+    uberVerificationId
+  );
+
+  const vid = smsPayload.id;
+
+  console.log(vid);
+
+  const res = await textVerified.cancelVerification(vid, authToken);
+  //console.log(res.text());
+
+  //console.log(smsPayload.number);
+  return;
 
   const imapClient = initializeImap({
     user: config.imapCredentials.emailAddress,
