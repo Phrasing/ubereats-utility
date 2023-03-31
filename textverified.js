@@ -11,7 +11,7 @@ async function fetchTextVerifiedAuthToken(accessToken) {
     "https://www.textverified.com/Api/SimpleAuthentication",
     config
   );
-  console.log(response);
+
   if (!response.ok) {
     return null;
   }
@@ -27,18 +27,19 @@ async function getUberVerificationId(authToken) {
     },
     method: "GET",
   };
-  const url = "https://www.textverified.com/Api/Targets";
-  const response = await fetch(url, config);
-  console.log(response);
+
+  const response = await fetch(
+    "https://www.textverified.com/Api/Targets",
+    config
+  );
+
   if (!response.ok) {
     console.log("Failed to get verification targets. Site Down?");
     return null;
   }
-  const data = await response.json();
-  const verificationId = data.find((obj) => obj.name == "UberEats").targetId;
 
-  console.log("Got Uber Verification Id.");
-  return verificationId;
+  const verificationIds = await response.json();
+  return verificationIds.find((obj) => obj.name == "UberEats").targetId;
 }
 
 async function getUberVerificationPayload(authToken, uberVerificationId) {
@@ -58,7 +59,7 @@ async function getUberVerificationPayload(authToken, uberVerificationId) {
     "https://www.textverified.com/Api/Verifications",
     config
   );
-  console.log(response);
+
   if (!response.ok) {
     switch (response.status) {
       case 503:
@@ -71,20 +72,22 @@ async function getUberVerificationPayload(authToken, uberVerificationId) {
         console.log("Not enough credits.");
         break;
       default:
-        console.log("Failed to create verification.");
+        console.log("Unknown error when creating verification.");
         console.log(response);
         break;
     }
     return null;
   }
+
   if (response == "Insufficient credits to start a verification.") {
     console.log(response);
     return null;
   }
+
   return await response.json();
 }
 
-async function cancelVerification(vid, authToken) {
+async function reportVerification(vid, authToken) {
   const token = "Bearer " + authToken;
   const config = {
     headers: {
@@ -92,10 +95,11 @@ async function cancelVerification(vid, authToken) {
     },
     method: "PUT",
   };
-  const url =
-    "https://www.textverified.com/Api/Verifications/" + vid + "/Cancel";
-  console.log(url);
-  const response = await fetch(url, config);
+
+  const response = await fetch(
+    "https://www.textverified.com/Api/Verifications/" + vid + "/Report",
+    config
+  );
   return response;
 }
 
@@ -103,5 +107,5 @@ module.exports = {
   fetchTextVerifiedAuthToken,
   getUberVerificationId,
   getUberVerificationPayload,
-  cancelVerification,
+  reportVerification,
 };

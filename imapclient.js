@@ -9,7 +9,8 @@ function initializeImap(imapConfig) {
   });
 
   imap.once("end", () => {
-    console.log("Disconnected from the IMAP server");
+    console.log("Disconnected from the IMAP server. Attemping to reconnect...");
+    imap.connect();
   });
 
   imap.connect();
@@ -58,7 +59,6 @@ function checkForUberCode(toAddress, imap) {
                 } else {
                   resolve(null);
                 }
-
               });
             });
 
