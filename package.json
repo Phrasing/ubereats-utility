@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "adm-zip": "^0.5.10",
+    "extract-zip": "^2.0.1",
+    "imap": "^0.8.19",
+    "mailparser": "^3.6.4",
+    "make-fetch-happen": "^11.0.3",
+    "os": "^0.1.2",
+    "puppeteer": "^19.8.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "enoIndex": 1,
+  "enoLogin": { "username": "markm1564", "password": "vYRWL9HADHCnFE9VTz" },
+  "imapCredentials": {
+    "host": "imap.gmail.com",
+    "port": 993,
+    "useTLS": true,
+    "emailAddress": "markmicciche44@gmail.com",
+    "appPassword": "zvpaoxscdqfwuecx"
+  },
+  "textVerifiedApiKey": "1_H99bxRNhLlbVya5oIuCFhgxdZ6iCEpJnL6xRKJaGeXjBudwHmuInScT_fT_NmlLMQvcQ56Rd",
+  "catchAll": "@lettermailing.com",
+  "uberFirstName": "Sean",
+  "billingZip": "32136",
+  "deliveryAddress": "313 N 11th St, Flagler Beach"
+}
